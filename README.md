@@ -23,10 +23,10 @@ It's like `mv`, but for localized string key/values. 💫
 To use this tool, download the binary from Github [here](https://github.com/rubencodes/Portkey/blob/main/portkey). Then, run the binary from the command line to move strings between localization bundles:
 
 ```bash
-portkey <key> <sourcePath> <destinationPath>
+portkey <key> <sourcePath> <destinationPath> [newKey]
 ```
 
-### Example
+### Basic Example
 
 ```
 portkey "HomePage.title" ./Modules/Login ./Modules/Onboarding
@@ -34,12 +34,24 @@ portkey "HomePage.title" ./Modules/Login ./Modules/Onboarding
 
 This moves the `HomePage.title` key from each locale’s `.strings` file in the Login module to the corresponding file in the Onboarding module.
 
+### Rename Example
+
+You can also use the tool to rename a key within a module (or rename it upon moving):
+
+```
+portkey "HomePage.title" ./Modules/Login ./Modules/Login "HomePage.Title.new"
+```
+
+In this case, the source and destination paths are the same, but we provide the optional new key argument, so it removes the original key, and adds it to the same file with a new key name.
+
 ## 🧠 What It Supports
 
 - ✅ .strings files
 - ✅ Per-locale \*.lproj directories (e.g., en.lproj/Localizable.strings)
-- ✅ Moves comments (/_ comment _/, // comment) associated with the key
+- ✅ Moving comments (/_ comment _/, // comment) associated with the key
+- ✅ Optional renaming of keys when moving
 - ✅ Graceful skipping if key not found or destination file doesn’t exist
+- ✅ Graceful skipping if key collision at destination
 
 ## 🛠 How It Works
 
