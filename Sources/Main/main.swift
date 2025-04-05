@@ -8,23 +8,46 @@
 import Core
 import Foundation
 
-if CommandLine.arguments.count < 4 {
-    print("🪄  Portkey - Instantly transport localization keys wherever they need to go.")
-    print("Usage:\n\tportkey <key> <sourcePath> <destinationPath> [newKey]\n")
-    print("Example:\n\tportkey \"page.title\" ./ModuleA ./ModuleB")
-    print("or:\n\tportkey \"page.title\" ./ModuleA ./ModuleA \"page.title.new\"")
+guard CommandLine.arguments.count > 1 else {
+    CommandLine.printUsage()
     exit(1)
 }
 
 let key = CommandLine.arguments[1]
-let sourcePath = CommandLine.arguments[2]
-let destinationPath = CommandLine.arguments[3]
-let newKey = CommandLine.arguments.count >= 5 ? CommandLine.arguments[4] : CommandLine.arguments[1]
+let sourcePath = CommandLine.argument(.from)
+let destinationPath = CommandLine.argument(.to)
+let newKey = CommandLine.argument(.newKey)
+let isDryRun: Bool = .init(CommandLine.argument(.dryRun) ?? "false") ?? false
+let isHelp: Bool = .init(CommandLine.argument(.help) ?? "false") ?? false
+
+// In help mode, print usage and exit.
+guard isHelp == false else {
+    CommandLine.printUsage()
+    exit(0)
+}
+
+// Ensure key exists, and source path exists.
+guard key.isEmpty == false, let sourcePath, sourcePath.isEmpty == false else {
+    CommandLine.printUsage()
+    exit(1)
+}
+
+// Ensure we're changing the path and/or changing the key name.
+guard sourcePath != destinationPath || newKey != nil else {
+    CommandLine.printUsage()
+    exit(1)
+}
 
 do {
-    let localizer = Portkey(key: key, newKey: newKey, sourcePath: sourcePath, destinationPath: destinationPath)
-    try localizer.run()
+    let porkey = Portkey(key: key,
+                         newKey: newKey ?? key,
+                         sourcePath: sourcePath,
+                         destinationPath: destinationPath ?? sourcePath,
+                         isDryRun: isDryRun)
+    try porkey.run()
+} catch is PortkeyError {
+    exit(1)
 } catch {
-    print("❌ Error: \(error)")
+    print("❌ Error: \(error.localizedDescription)")
     exit(1)
 }

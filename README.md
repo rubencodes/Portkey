@@ -23,13 +23,13 @@ It's like `mv`, but for localized string key/values. 💫
 To use this tool, download the binary from Github [here](https://github.com/rubencodes/Portkey/blob/main/portkey). Then, run the binary from the command line to move strings between localization bundles:
 
 ```bash
-portkey <key> <sourcePath> <destinationPath> [newKey]
+portkey <key> --from=<sourcePath> --to=<destinationPath>
 ```
 
 ### Basic Example
 
 ```
-portkey "HomePage.title" ./Modules/Login ./Modules/Onboarding
+portkey "HomePage.title" ./Modules/Login/Localization ./Modules/Onboarding/Localization
 ```
 
 This moves the `HomePage.title` key from each locale’s `.strings` file in the Login module to the corresponding file in the Onboarding module.
@@ -39,7 +39,7 @@ This moves the `HomePage.title` key from each locale’s `.strings` file in the 
 You can also use the tool to rename a key within a module (or rename it upon moving):
 
 ```
-portkey "HomePage.title" ./Modules/Login ./Modules/Login "HomePage.Title.new"
+portkey "HomePage.title" --new-key="HomePage.Title.new" --from=./Modules/Login/Localization
 ```
 
 In this case, the source and destination paths are the same, but we provide the optional new key argument, so it removes the original key, and adds it to the same file with a new key name.
@@ -63,12 +63,12 @@ For each locale found in the source module:
 - Portkey removes the entry and any comment above it
 - If a matching destination file exists, Portkey appends the entry to it
 
-3. The key is moved once per locale, and logs are printed to confirm what happened.
+3. The key is moved once per locale.
 
 ## 🔮 Future Plans
 
+- 💨 Move multiple strings at once
 - ⏳ Support for .stringsdict files
-- 🧪 --dry-run mode
 - 📣 --verbose or --quiet flags
 
 ## 📦 Building
