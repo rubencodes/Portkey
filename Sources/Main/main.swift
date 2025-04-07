@@ -13,7 +13,7 @@ guard CommandLine.arguments.count > 1 else {
     exit(1)
 }
 
-let key = CommandLine.arguments[1]
+let key = CommandLine.argument(.key)
 let sourcePath = CommandLine.argument(.from)
 let destinationPath = CommandLine.argument(.to)
 let newKey = CommandLine.argument(.newKey)
@@ -27,7 +27,7 @@ guard isHelp == false else {
 }
 
 // Ensure key exists, and source path exists.
-guard key.isEmpty == false, let sourcePath, sourcePath.isEmpty == false else {
+guard let key, key.isEmpty == false, let sourcePath, sourcePath.isEmpty == false else {
     CommandLine.printUsage()
     exit(1)
 }

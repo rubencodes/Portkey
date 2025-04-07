@@ -23,13 +23,13 @@ It's like `mv`, but for localized string key/values. 💫
 To use this tool, download the binary from Github [here](https://github.com/rubencodes/Portkey/blob/main/portkey). Then, run the binary from the command line to move strings between localization bundles:
 
 ```bash
-portkey <key> --from=<sourcePath> --to=<destinationPath>
+portkey --key=<key> --from=<sourcePath> --to=<destinationPath>
 ```
 
 ### Basic Example
 
 ```
-portkey "HomePage.title" ./Modules/Login/Localization ./Modules/Onboarding/Localization
+portkey --key="HomePage.title" --from=./Modules/Login/Localization --to=./Modules/Onboarding/Localization
 ```
 
 This moves the `HomePage.title` key from each locale’s `.strings` file in the Login module to the corresponding file in the Onboarding module.
@@ -39,7 +39,7 @@ This moves the `HomePage.title` key from each locale’s `.strings` file in the 
 You can also use the tool to rename a key within a module (or rename it upon moving):
 
 ```
-portkey "HomePage.title" --new-key="HomePage.Title.new" --from=./Modules/Login/Localization
+portkey --key="HomePage.title" --new-key="HomePage.Title.new" --from=./Modules/Login/Localization
 ```
 
 In this case, the source and destination paths are the same, but we provide the optional new key argument, so it removes the original key, and adds it to the same file with a new key name.
@@ -82,7 +82,7 @@ swift build
 To run the script locally:
 
 ```
-swift run portkey <key> <sourcePath> <destinationPath>
+swift run portkey --key=<key> --from=<sourcePath> --to=<destinationPath>
 ```
 
 To package a new release executable, run:

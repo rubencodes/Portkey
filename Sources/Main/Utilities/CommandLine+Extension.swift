@@ -9,6 +9,7 @@ import Foundation
 
 public extension CommandLine {
     enum CommandLineOption: String, CaseIterable {
+        case key
         case from
         case to
         case newKey = "new-key"
@@ -17,6 +18,8 @@ public extension CommandLine {
 
         var usage: String {
             switch self {
+            case .key:
+                return "--key=<key>"
             case .from:
                 return "--from=<path>"
             case .to:
@@ -32,12 +35,14 @@ public extension CommandLine {
 
         var description: String {
             switch self {
+            case .key:
+                return "Key to search for in source localization files"
             case .from:
                 return "Path to source localization files"
             case .to:
-                return "Path to destination localization files (optional - defaults to source)"
+                return "Path to destination localization files (optional - defaults to source path)"
             case .newKey:
-                return "Key to write to new files (optional - defaults to original)"
+                return "Key to write to new files (optional - defaults to original key)"
             case .dryRun:
                 return "Perform a dry run without actually modifying files (optional)"
             case .help:
@@ -67,8 +72,8 @@ public extension CommandLine {
 
     static func printUsage() {
         print("🪄  Portkey - Instantly transport localization keys wherever they need to go.\n")
-        print("Usage:\n\tportkey <key> --from=<sourcePath> --to=<destinationPath>\n")
-        print("Example:\n\tportkey \"page.title\" --from=./ModuleA/Localization --to=./ModuleB/Localization\n")
+        print("Usage:\n\tportkey --key=<key> --from=<sourcePath> --to=<destinationPath>\n")
+        print("Example:\n\tportkey --key=\"page.title\" --from=./ModuleA/Localization --to=./ModuleB/Localization\n")
         print("Options:")
         for item in CommandLineOption.allCases {
             print("\t\(item.usage)\n\t\t\(item.description)\n")
