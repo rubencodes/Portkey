@@ -21,12 +21,12 @@ struct StringsFile: LocalizationFile {
 
     init?(directoryPath: String,
           locale: String,
-          fileManager: FileManager,
+          fileManager: FileManaging,
           fileReader: FileReading,
           fileWriter: FileWriting)
     {
         let fullPath = "\(directoryPath)/\(locale)/Localizable.strings"
-        guard fileManager.fileExists(atPath: fullPath) else { return nil }
+        guard fileManager.fileExists(at: fullPath) else { return nil }
         path = fullPath
         self.fileReader = fileReader
         self.fileWriter = fileWriter

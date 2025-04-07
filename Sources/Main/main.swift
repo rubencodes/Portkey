@@ -9,7 +9,7 @@ import Core
 import Foundation
 
 // In help mode, print usage and exit.
-let isHelp = CommandLine.bool(for: .help)
+let isHelp = CommandLine.arguments.bool(for: .help)
 guard isHelp == false else {
     CommandLine.printUsage()
     exit(0)

@@ -6,6 +6,9 @@ import PackageDescription
 let package = Package(
     name: "Portkey",
     platforms: [.macOS(.v14)],
+    dependencies: [
+        .package(url: "https://github.com/swiftlang/swift-testing.git", branch: "main"),
+    ],
     targets: [
         .executableTarget(
             name: "portkey",
@@ -15,6 +18,15 @@ let package = Package(
         .target(
             name: "Core",
             dependencies: []
+        ),
+        .testTarget(
+            name: "PortkeyTests",
+            dependencies: [
+                "portkey",
+                "Core",
+                .product(name: "Testing", package: "swift-testing"),
+            ],
+            path: "Tests"
         ),
     ]
 )

@@ -9,7 +9,6 @@ import Core
 import Foundation
 
 extension Portkey {
-
     enum InitializationError: Error, LocalizedError {
         case missingKey
         case missingSourcePath
@@ -28,11 +27,11 @@ extension Portkey {
     }
 
     static func create(from arguments: [String] = CommandLine.arguments) throws -> Portkey {
-        let keys = CommandLine.stringArray(for: .key) + CommandLine.stringArray(for: .keys)
-        let sourcePath = CommandLine.string(for: .from)
-        let destinationPath = CommandLine.string(for: .to)
-        let newKey = CommandLine.string(for: .newKey)
-        let isDryRun = CommandLine.bool(for: .dryRun)
+        let keys = arguments.stringArray(for: .key) + arguments.stringArray(for: .keys)
+        let sourcePath = arguments.string(for: .from)
+        let destinationPath = arguments.string(for: .to)
+        let newKey = arguments.string(for: .newKey)
+        let isDryRun = arguments.bool(for: .dryRun)
 
         // Ensure some key exists, and source path exists.
         guard keys.isEmpty == false else {
@@ -44,7 +43,7 @@ extension Portkey {
         }
 
         // Ensure we're changing the path and/or changing the key name.
-        guard sourcePath != destinationPath || newKey != nil else {
+        guard (destinationPath != nil && destinationPath != sourcePath) || (newKey != nil && !keys.contains(newKey ?? "")) else {
             throw InitializationError.missingRequiredArguments
         }
 

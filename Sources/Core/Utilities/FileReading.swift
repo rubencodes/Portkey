@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol FileReading {
+public protocol FileReading {
     func read(from path: String) throws -> String
 }

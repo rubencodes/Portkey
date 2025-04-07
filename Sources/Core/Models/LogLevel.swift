@@ -8,12 +8,14 @@
 import Foundation
 
 /// Log level to use for execution.
-enum LogLevel: String, Equatable {
+public enum LogLevel: String, Equatable {
     case debug
     case info
     case warning
     case error
     case off
+
+    public static var `default`: LogLevel { .info }
 
     private var intValue: Int {
         switch self {
@@ -24,8 +26,6 @@ enum LogLevel: String, Equatable {
         case .off: return 4
         }
     }
-
-    static var `default`: LogLevel { .info }
 
     static func <= (lhs: LogLevel, rhs: LogLevel) -> Bool {
         return lhs.intValue <= rhs.intValue

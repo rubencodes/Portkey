@@ -8,10 +8,9 @@
 import Foundation
 
 public extension CommandLine {
-
     // MARK: - Nested Types
 
-    enum CommandLineOption: String, CaseIterable {
+    enum Option: String, CaseIterable {
         case key
         case keys
         case from
@@ -69,59 +68,13 @@ public extension CommandLine {
 
     // MARK: - Internal Functions
 
-    static func string(for option: CommandLineOption) -> String? {
-        guard let stringValue = rawValue(for: option) else { return nil }
-        guard let unquotedStringValue = stringValue.firstMatch(of: Regex<Any>.quotedValue)?.output.value else {
-            return "\(stringValue)"
-        }
-
-        return "\(unquotedStringValue)"
-    }
-
-    static func stringArray(for option: CommandLineOption) -> [String] {
-        guard let stringValue = rawValue(for: option) else { return [] }
-        return stringValue
-            .split(separator: ",")
-            .compactMap { stringValue in
-                guard let unquotedStringValue = stringValue.firstMatch(of: Regex<Any>.quotedValue)?.output.value else {
-                    return "\(stringValue)"
-                }
-
-                return "\(unquotedStringValue)"
-            }
-            .filter { !$0.isEmpty }
-    }
-
-    static func bool(for option: CommandLineOption) -> Bool {
-        return rawValue(for: option) != nil
-    }
-
     static func printUsage() {
         print("🪄  Portkey - Instantly transport localization keys wherever they need to go.\n")
         print("Usage:\n\tportkey --key=<key> --from=<sourcePath> --to=<destinationPath>\n")
         print("Example:\n\tportkey --key=\"page.title\" --from=./ModuleA/Localization --to=./ModuleB/Localization\n")
         print("Options:")
-        for item in CommandLineOption.allCases {
+        for item in CommandLine.Option.allCases {
             print("\t\(item.usage)\n\t\t\(item.description)\n")
         }
-    }
-
-    // MARK: - Private Functions
-
-    private static func rawValue(for option: CommandLineOption) -> String? {
-        arguments.compactMap { argument -> String? in
-            guard let match = argument.firstMatch(of: Regex<Any>.argument) else {
-                return nil
-            }
-            guard match.output.argumentName == option.rawValue else {
-                return nil
-            }
-
-            guard let value = match.output.argumentValue else {
-                return ""
-            }
-
-            return "\(value)"
-        }.first
     }
 }
