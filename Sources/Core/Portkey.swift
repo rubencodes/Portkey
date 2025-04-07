@@ -11,9 +11,9 @@ public struct Portkey {
     // MARK: - Private Properties
 
     private let key: String
-    private let newKey: String
+    private let newKey: String?
     private let sourcePath: String
-    private let destinationPath: String
+    private let destinationPath: String?
     private let isDryRun: Bool
     private let logger: Logger
 
@@ -24,7 +24,7 @@ public struct Portkey {
 
     // MARK: - Lifecycle
 
-    public init(key: String, newKey: String, sourcePath: String, destinationPath: String, isDryRun: Bool) {
+    public init(key: String, newKey: String?, sourcePath: String, destinationPath: String?, isDryRun: Bool) {
         self.key = key
         self.newKey = newKey
         self.sourcePath = sourcePath
@@ -60,7 +60,7 @@ public struct Portkey {
                 }
 
                 // Check that the destination file exists.
-                guard let destination = fileType.init(directoryPath: destinationPath,
+                guard let destination = fileType.init(directoryPath: destinationPath ?? sourcePath,
                                                       locale: locale,
                                                       fileManager: fileManager,
                                                       fileReader: fileReader,
@@ -71,22 +71,23 @@ public struct Portkey {
                 }
 
                 // Check that the new key doesn't exist in the destination file.
-                if destination.containsKey(newKey) {
-                    logger.warning("⚠️ Destination already contains key '\(newKey)' in \(locale). Skipping.")
+                let destinationKey = newKey ?? key
+                if destination.containsKey(destinationKey) {
+                    logger.warning("⚠️ Destination already contains key '\(destinationKey)' in \(locale). Skipping.")
                     continue
                 }
 
                 // Meat & Potatoes: Move key from source to newKey at destination.
                 guard var entry = try source.removeEntry(forKey: key) else { continue }
-                if key != newKey {
-                    entry = entry.replacingOccurrences(of: "\"\(key)\"", with: "\"\(newKey)\"")
+                if key != destinationKey {
+                    entry = entry.replacingOccurrences(of: "\"\(key)\"", with: "\"\(destinationKey)\"")
                 }
                 try destination.appendEntry(entry)
 
                 // All set!
                 hasSuccessfullyMovedKey = true
-                if key != newKey {
-                    logger.debug("✅ Moved '\(key)' to '\(newKey)' in \(locale)")
+                if key != destinationKey {
+                    logger.debug("✅ Moved '\(key)' to '\(destinationKey)' in \(locale)")
                 } else {
                     logger.debug("✅ Moved '\(key)' in \(locale)")
                 }

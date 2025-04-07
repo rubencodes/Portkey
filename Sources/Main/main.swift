@@ -40,9 +40,9 @@ guard sourcePath != destinationPath || newKey != nil else {
 
 do {
     let porkey = Portkey(key: key,
-                         newKey: newKey ?? key,
+                         newKey: newKey,
                          sourcePath: sourcePath,
-                         destinationPath: destinationPath ?? sourcePath,
+                         destinationPath: destinationPath,
                          isDryRun: isDryRun)
     try porkey.run()
 } catch is PortkeyError {
