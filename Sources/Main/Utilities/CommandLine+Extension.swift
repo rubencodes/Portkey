@@ -38,14 +38,6 @@ public extension CommandLine {
             }
         }
 
-        var type: Any.Type {
-            switch self {
-            case .key, .keys: return [String].self
-            case .from, .to, .newKey: return String.self
-            case .dryRun, .help: return Bool.self
-            }
-        }
-
         var description: String {
             switch self {
             case .key:

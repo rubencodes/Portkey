@@ -1,0 +1,10 @@
+# Unused File Ignore
+
+# False positives
+"./Sources/Main/Utilities/Portkey+Extension.swift": "errorDescription"
+
+# e.g. This ignores the `Tests` directory.
+Tests/.*
+
+# e.g. This ignores all `.swift` files in the `.build` directory.
+\.build/.*\.swift
