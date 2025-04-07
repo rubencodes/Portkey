@@ -42,7 +42,15 @@ You can also use the tool to rename a key within a module (or rename it upon mov
 portkey --key="HomePage.title" --new-key="HomePage.Title.new" --from=./Modules/Login/Localization
 ```
 
-In this case, the source and destination paths are the same, but we provide the optional new key argument, so it removes the original key, and adds it to the same file with a new key name.
+In this case, we only pass a source path, but we provide the optional new key argument, so it removes the original key, and adds it to the same file with a new key name.
+
+### Multiple Keys Example
+
+To move multiple keys, use the `keys` argument to provide a comma-separated list of keys:
+
+```
+portkey --keys=HomePage.title,HomePage.subtitle,HomePage.footer --from=./Modules/Login/Localization --to=./Modules/Onboarding/Localization
+```
 
 ## 🧠 What It Supports
 

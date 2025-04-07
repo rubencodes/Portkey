@@ -42,36 +42,34 @@ struct StringsFile: LocalizationFile {
     func removeEntry(forKey key: String) throws -> String? {
         let content = try fileReader.read(from: path)
         let lines = content.components(separatedBy: .newlines)
-        var newLines: [String] = []
-        var buffer: [String] = []
-        var foundEntry: String?
+        let linesReversed = lines.reversed()
+        var linesWithoutEntry: [String] = []
+        var entryLines: [String] = []
 
-        for line in lines {
-            if line.contains("\"\(key)\"") && line.contains("=") {
-                if !buffer.isEmpty {
-                    buffer.append(line)
-                    foundEntry = buffer.joined(separator: "\n")
-                    buffer.removeAll()
-                } else {
-                    foundEntry = line
+        var isMatchingEntry = false
+        for line in linesReversed {
+            // Check if this is the entry we're looking for.
+            guard isEntry(line, forKey: key) else {
+                // Check if we're currently capturing an entry (and that we haven't reached a new entry).
+                guard isMatchingEntry, isEntry(line) == false else {
+                    // Stop capturing any entries, and prepend content to the new file buffer.
+                    isMatchingEntry = false
+                    linesWithoutEntry = [line] + linesWithoutEntry
+                    continue
                 }
-            } else {
-                if line.trimmingCharacters(in: .whitespaces).hasPrefix("/*") ||
-                    line.trimmingCharacters(in: .whitespaces).hasPrefix("//")
-                {
-                    buffer = [line]
-                } else {
-                    if !buffer.isEmpty {
-                        newLines.append(contentsOf: buffer)
-                        buffer.removeAll()
-                    }
-                    newLines.append(line)
-                }
+
+                // Prepend line to the entry buffer.
+                entryLines = [line] + entryLines
+                continue
             }
+
+            // Start capturing the entry, and prepend it to the entry buffer.
+            isMatchingEntry = true
+            entryLines = [line]
         }
 
-        try fileWriter.write(newLines.joined(separator: "\n"), to: path)
-        return foundEntry
+        try fileWriter.write(linesWithoutEntry.joined(separator: "\n"), to: path)
+        return entryLines.joined(separator: "\n")
     }
 
     func appendEntry(_ entry: String) throws {
@@ -81,5 +79,19 @@ struct StringsFile: LocalizationFile {
         }
         content.append("\(entry)\n")
         try fileWriter.write(content, to: path)
+    }
+
+    // MARK: - Private Functions
+
+    private func isComment(_ line: String) -> Bool {
+        line.trimmingCharacters(in: .whitespaces).hasPrefix("/*") || line.trimmingCharacters(in: .whitespaces).hasPrefix("//")
+    }
+
+    private func isEntry(_ line: String) -> Bool {
+        isComment(line) == false && line.contains(#/.*=.*;/#)
+    }
+
+    private func isEntry(_ line: String, forKey key: String) -> Bool {
+        isEntry(line) && line.trimmingCharacters(in: .whitespaces).hasPrefix("\"\(key)\"")
     }
 }
