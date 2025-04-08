@@ -1,5 +1,7 @@
 # 🪄 Portkey
 
+![CI Status](https://github.com/rubencodes/portkey/actions/workflows/push.yaml/badge.svg)
+
 **Portkey** is a Swift command-line tool that helps you move localized string entries between modules or bundles in your iOS project.
 
 ## 💬 A Note on the Name
