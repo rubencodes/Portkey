@@ -307,6 +307,59 @@ struct PortkeyTests {
                             fileWriter: fileHandler)
         }
     }
+
+    @Test func test_exitsSilentlyIfNoAffectedKeys() throws {
+        let key = "foo"
+        let sourceDirectory = "/a"
+        let destinationDirectory = "/b"
+        let portkey = Portkey(keys: ["bar"],
+                              sourcePath: sourceDirectory,
+                              destinationPath: destinationDirectory,
+                              logLevel: .debug)
+        let sourcePath: String = .createPathForLocale("en", in: sourceDirectory)
+        let sourceContent: String = .createStringsFile(withKey: key, value: "Foo")
+        let destinationPath: String = .createPathForLocale("en", in: destinationDirectory)
+        let destinationContent: String = .createStringsFile(withKey: key, value: "Bar")
+        let files = [
+            sourcePath: sourceContent,
+            destinationPath: destinationContent,
+        ]
+        let fileHandler = TestFileHandler(files: files)
+        try portkey.run(fileManager: fileHandler,
+                        fileReader: fileHandler,
+                        fileWriter: fileHandler)
+        let updatedSourceContent = try fileHandler.read(from: sourcePath)
+        let updatedDestinationContent = try fileHandler.read(from: destinationPath)
+        #expect(updatedSourceContent.trimmingCharacters(in: .whitespacesAndNewlines) == sourceContent.trimmingCharacters(in: .whitespacesAndNewlines))
+        #expect(updatedDestinationContent.trimmingCharacters(in: .whitespacesAndNewlines) == destinationContent.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+
+    @Test func test_exitsSilentlyIfDryRun() throws {
+        let key = "foo"
+        let sourceDirectory = "/a"
+        let destinationDirectory = "/b"
+        let portkey = Portkey(keys: [key],
+                              sourcePath: sourceDirectory,
+                              destinationPath: destinationDirectory,
+                              isDryRun: true,
+                              logLevel: .debug)
+        let sourcePath: String = .createPathForLocale("en", in: sourceDirectory)
+        let sourceContent: String = .createStringsFile(withKey: key, value: "Foo")
+        let destinationPath: String = .createPathForLocale("en", in: destinationDirectory)
+        let destinationContent = ""
+        let files = [
+            sourcePath: sourceContent,
+            destinationPath: destinationContent,
+        ]
+        let fileHandler = TestFileHandler(files: files)
+        try portkey.run(fileManager: fileHandler,
+                        fileReader: fileHandler,
+                        fileWriter: fileHandler)
+        let updatedSourceContent = try fileHandler.read(from: sourcePath)
+        let updatedDestinationContent = try fileHandler.read(from: destinationPath)
+        #expect(updatedSourceContent.trimmingCharacters(in: .whitespacesAndNewlines) == sourceContent.trimmingCharacters(in: .whitespacesAndNewlines))
+        #expect(updatedDestinationContent.trimmingCharacters(in: .whitespacesAndNewlines) == destinationContent.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
 }
 
 extension String {

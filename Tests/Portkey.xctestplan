@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "565F0C05-DDE4-4FC8-B905-8849C62AA6FA",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "portkey",
+      "name" : "portkey"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "PortkeyTests",
+        "name" : "PortkeyTests"
+      }
+    }
+  ],
+  "version" : 1
+}

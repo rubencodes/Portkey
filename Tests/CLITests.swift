@@ -13,8 +13,8 @@ import Testing
 struct CLITests {
     @Test func test_CreatesPortkeyFromHappyPathArguments() {
         let portkeyBasic = try? Portkey.create(from: [
-            "--key=foo",
-            "--from=/bar",
+            "--key=\"foo\"",
+            "--from='/bar'",
             "--to=/baz",
         ])
         #expect(portkeyBasic != nil)
@@ -64,5 +64,32 @@ struct CLITests {
                 "--from=/bar",
             ])
         }
+    }
+
+    @Test func test_ParsesBooleanArguments() {
+        let portkeyBasic = try? Portkey.create(from: [
+            "--key=foo",
+            "--from=/bar",
+            "--to=/baz",
+            "--dry-run",
+        ])
+        #expect(portkeyBasic != nil)
+        #expect(portkeyBasic?.keys == ["foo"])
+        #expect(portkeyBasic?.sourcePath == "/bar")
+        #expect(portkeyBasic?.destinationPath == "/baz")
+        #expect(portkeyBasic?.isDryRun ?? false)
+    }
+
+    @Test func test_IgnoresUnrecognizedArguments() {
+        let portkeyBasic = try? Portkey.create(from: [
+            "--key=foo",
+            "--from=/bar",
+            "--to=/baz",
+            "unknown-argument=bar",
+        ])
+        #expect(portkeyBasic != nil)
+        #expect(portkeyBasic?.keys == ["foo"])
+        #expect(portkeyBasic?.sourcePath == "/bar")
+        #expect(portkeyBasic?.destinationPath == "/baz")
     }
 }
