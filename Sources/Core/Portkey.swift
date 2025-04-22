@@ -95,7 +95,7 @@ public final class Portkey {
                     // Meat & Potatoes: Move key from source to newKey at destination.
                     guard var entry = try source.removeEntry(forKey: key) else { continue }
                     if key != destinationKey {
-                        entry = entry.replacingOccurrences(of: "\"\(key)\"", with: "\"\(destinationKey)\"")
+                        entry = entry.replacing("\"\(key)\"", with: "\"\(destinationKey)\"", maxReplacements: 1)
                     }
                     try destination.appendEntry(entry)
 

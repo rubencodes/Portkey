@@ -12,7 +12,8 @@ import Testing
 struct PortkeyTests {
     // MARK: - Basic Functionality
 
-    @Test func test_itMovesSingleKey() throws {
+    @Test("It moves a single key from one directory to another")
+    func test_itMovesSingleKey() throws {
         let key = "foo"
         let sourceDirectory = "/a"
         let destinationDirectory = "/b"
@@ -36,7 +37,8 @@ struct PortkeyTests {
         #expect(updatedDestinationContent.trimmingCharacters(in: .whitespacesAndNewlines) == sourceContent.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    @Test func test_itRenamesSingleKey() throws {
+    @Test("It moves and renames a single key from one directory to another")
+    func test_itMovesAndRenamesSingleKey() throws {
         let key = "foo"
         let newKey = "bar"
         let sourceDirectory = "/a"
@@ -62,7 +64,8 @@ struct PortkeyTests {
         #expect(updatedDestinationContent.trimmingCharacters(in: .whitespacesAndNewlines) == .createStringsFile(withKey: newKey, value: "Foo").trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    @Test func test_itRenamesSingleKeyInPlace() throws {
+    @Test("It renames a single key in place")
+    func test_itRenamesSingleKey() throws {
         let key = "foo"
         let newKey = "bar"
         let sourceDirectory = "/a"
@@ -83,7 +86,8 @@ struct PortkeyTests {
         #expect(updatedSourceContent.trimmingCharacters(in: .whitespacesAndNewlines) == .createStringsFile(withKey: newKey, value: "Foo").trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    @Test func test_itMovesMultipleKeys() throws {
+    @Test("It moves multiple keys from one directory to another")
+    func test_itMovesMultipleKeys() throws {
         let key1 = "foo"
         let key2 = "bar"
         let sourceDirectory = "/a"
@@ -111,7 +115,8 @@ struct PortkeyTests {
         #expect(updatedDestinationContent.trimmingCharacters(in: .whitespacesAndNewlines) == sourceContent.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    @Test func test_itPreservesOtherSourceContent() throws {
+    @Test("It preserves other source content when moving a single key from one directory to another")
+    func test_itPreservesOtherSourceContent() throws {
         let key = "foo"
         let sourceDirectory = "/a"
         let destinationDirectory = "/b"
@@ -138,7 +143,8 @@ struct PortkeyTests {
         #expect(updatedSourceContent.trimmingCharacters(in: .whitespacesAndNewlines) == .createStringsFile(withKey: "some.other.key", value: "some other value").trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    @Test func test_itPreservesOtherDestinationContent() throws {
+    @Test("It preserves destination file content when moving a single key from one directory to another")
+    func test_itPreservesDestinationContent() throws {
         let key = "foo"
         let sourceDirectory = "/a"
         let destinationDirectory = "/b"
@@ -162,7 +168,35 @@ struct PortkeyTests {
         #expect(updatedDestinationContent.trimmingCharacters(in: .whitespacesAndNewlines) == [destinationContent, sourceContent].joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    @Test func test_itMovesSingleKeyMultipleLocales() throws {
+    @Test("It moves and renames a single key with same key and value")
+    func test_itMovesAndRenamesSingleKeyWithSameNameAndValue() throws {
+        let key = "foo"
+        let newKey = "bar"
+        let sourceDirectory = "/a"
+        let destinationDirectory = "/b"
+        let portkey = Portkey(keys: [key],
+                              newKey: newKey,
+                              sourcePath: sourceDirectory,
+                              destinationPath: destinationDirectory,
+                              logLevel: .debug)
+        let sourcePath: String = .createPathForLocale("en", in: sourceDirectory)
+        let sourceContent: String = .createStringsFile(withKey: key, value: key)
+        let destinationPath: String = .createPathForLocale("en", in: destinationDirectory)
+        let destinationContent = ""
+        let files = [
+            sourcePath: sourceContent,
+            destinationPath: destinationContent,
+        ]
+        let fileHandler = TestFileHandler(files: files)
+        try portkey.run(fileManager: fileHandler,
+                        fileReader: fileHandler,
+                        fileWriter: fileHandler)
+        let updatedDestinationContent = try fileHandler.read(from: destinationPath)
+        #expect(updatedDestinationContent.trimmingCharacters(in: .whitespacesAndNewlines) == .createStringsFile(withKey: newKey, value: key).trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+
+    @Test("It moves a single key in multiple locales from one directory to another")
+    func test_itMovesSingleKeyMultipleLocales() throws {
         let key = "foo"
         let sourceDirectory = "/a"
         let destinationDirectory = "/b"
@@ -200,7 +234,8 @@ struct PortkeyTests {
         #expect(updatedDestinationContent3.trimmingCharacters(in: .whitespacesAndNewlines) == sourceContent3.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    @Test func test_itMovesMultipleKeysMultipleLocales() throws {
+    @Test("It moves multiple keys in multiple locales from one directory to another")
+    func test_itMovesMultipleKeysMultipleLocales() throws {
         let key1 = "foo"
         let key2 = "bar"
         let sourceDirectory = "/a"
